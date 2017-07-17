@@ -1,0 +1,18 @@
+spring:
+  profiles.active: dev
+  
+---
+# 开发环境配置 
+spring:
+  profiles: dev
+  dubbo:
+    application:
+      name: zoro-dubbo-bg
+    registry:
+      address: zookeeper://127.0.0.1:2181
+    scan: zoro.dubbo.openapi
+    
+---
+# 生产环境配置
+spring:
+  profiles: prod

@@ -1,0 +1,184 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>zoro.dubbo.openapi</groupId>
+		<artifactId>zoro-dubbo-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>zoro-dubbo-provider</artifactId>
+	<packaging>war</packaging>
+
+	<name>zoro-dubbo-provider</name>
+	<url>http://maven.apache.org/</url>
+
+	<properties>
+		<!-- 项目编码配置 start -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<!-- 项目编码配置 end -->
+	</properties>
+
+	<build>
+		<finalName>zoro-dubbo-provider</finalName> <!-- 配置打包出来jar的名字 -->
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
+		<pluginManagement>
+			<plugins>
+				<!-- 解决Maven插件在Eclipse内执行了一系列的生命周期引起冲突 -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-dependency-plugin</artifactId>
+										<versionRange>[2.0,)</versionRange>
+										<goals>
+											<goal>copy-dependencies</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<!-- 打包jar文件时，配置manifest文件，加入lib包的jar依赖 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<classesDirectory>target/classes/</classesDirectory>
+					<archive>
+						<manifest>
+							<mainClass>com.alibaba.dubbo.container.Main</mainClass>
+							<!-- 打包时 MANIFEST.MF文件不记录的时间戳版本 -->
+							<useUniqueVersions>false</useUniqueVersions>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+						</manifest>
+						<manifestEntries>
+							<Class-Path>.</Class-Path>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<type>jar</type>
+							<includeTypes>jar</includeTypes>
+							<useUniqueVersions>false</useUniqueVersions>
+							<outputDirectory>
+								${project.build.directory}/lib
+							</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+
+	</build>
+
+	<dependencies>
+        
+        <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<!-- 要使用LOG4J，去掉该依赖 -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>log4j-over-slf4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+				<!-- 要打成war包执行，去掉内嵌的tomcat -->
+	            <exclusion>
+	                <groupId>org.springframework.boot</groupId>
+	                <artifactId>spring-boot-starter-tomcat</artifactId>
+	            </exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- 使用log4j，不使用默认的logback -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j</artifactId>
+		</dependency>
+
+		<!-- 要打成war包执行，需要该依赖 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-legacy</artifactId>
+		</dependency>
+
+		<!-- dubbo start -->
+		<dependency>
+			<groupId>io.dubbo.springboot</groupId>
+			<artifactId>spring-boot-starter-dubbo</artifactId>
+		</dependency>
+		<!-- dubbo end -->
+
+		<!-- servlet start -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>jsptags</groupId>
+			<artifactId>pager-taglib</artifactId>
+		</dependency>
+		<!-- servlet end -->
+		
+		<!-- zoro jar start -->
+		<dependency>
+			<groupId>zoro.dubbo.openapi</groupId>
+			<artifactId>zoro-dubbo-facade</artifactId>
+		</dependency>
+		<!-- zoro jar end -->
+
+	</dependencies>
+</project>
