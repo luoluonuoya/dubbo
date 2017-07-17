@@ -1,9 +1,3 @@
----
-title: springboot+dubbo简单实现
-date: 2017-07-17 14:51:31
-categories: [Java]
-tags: [Java,springboot,dubbo]
----
 ### 一、目录结构
 #### zoro-dubbo-parent（maven父模块）
 #### zoro-dubbo-provider （生产者）
